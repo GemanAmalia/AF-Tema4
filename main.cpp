@@ -260,7 +260,8 @@ vector<vector<int>> graf :: CTC()
     vector<vector<int>> sol;
 
     while(!S.empty()) // luam nodurile din stiva si facem un dfs din nodul respectiv daca nodul nu a fost deja vizitat
-    {                 // in acest caz se va forma o noua comp tare conexa
+    {
+        // in acest caz se va forma o noua comp tare conexa
         int varf = S.top();
         S.pop();
         if(!vizDFST[varf])
@@ -289,12 +290,12 @@ bool graf :: Havel_Hakimi(vector <int> grade, int nrNoduri)
 
     while(ok)
     {
-        sort(grade.begin(), grade.end(), myfunction);
+        sort(grade.begin(), grade.end(), myfunction); // sortam descrescator
 
         if(grade[0] == 0) // daca cel mai mare element dupa sortare este 0 => toate elementele sunt 0 => se poate forma
             return true;
 
-        if(grade[0] > grade.size() - 1) // daca gradul este mai mare decat nr de noduri curente - 1 => NU se poate forma
+        if(grade[0] > grade.size() - 1) // daca gradul este mai mare decat (nr de noduri curente - 1 => NU se poate forma
             return false;
 
         int grad_curent = grade[0];
@@ -327,7 +328,7 @@ void graf :: DFS_Muchii_Critice(int s, int tata, bool viz[], int nivel[], int ni
     for(auto i : gr[s])
         if(i != tata)
         {
-            if(viz[i] == 1)   // (s,i) ar fi muchie de intoarcere (deci nu poate fi muchie critica) deoarece i a fost vizitat deja
+            if(viz[i] == 1)   // (s,i) (deci nu poate fi muchie critica) deoarece i a fost vizitat deja
             {
                 if(niv_min_acc[s] > nivel[i])
                     niv_min_acc[s] = nivel[i];
@@ -335,6 +336,7 @@ void graf :: DFS_Muchii_Critice(int s, int tata, bool viz[], int nivel[], int ni
             else
             {
                 DFS_Muchii_Critice(i, s, viz, nivel, niv_min_acc, ct_muchii_critice);
+
                 if(niv_min_acc[s] > niv_min_acc[i])
                     niv_min_acc[s] = niv_min_acc[i];
             }
@@ -385,7 +387,7 @@ void graf :: DFS_Componente_Biconexe(int s, int tata, bool viz[], int nivel[], i
 
     for (auto i : gr[s])
     {
-        if (viz[i] == 1)       // (s,i) ar fi muchie de intoarcere (deci nu poate fi muchie critica) deoarece i a fost vizitat deja
+        if (viz[i] == 1)       // (s,i) (deci nu poate fi muchie critica) deoarece i a fost vizitat deja
         {
             if(niv_min_acc[s] > nivel[i])
                 niv_min_acc[s] = nivel[i];
@@ -399,7 +401,7 @@ void graf :: DFS_Componente_Biconexe(int s, int tata, bool viz[], int nivel[], i
 
 
             // determinare componente biconexe
-            if(niv_min_acc[i] >= nivel[s])
+            if(niv_min_acc[i] >= nivel[s]) // conditie necesara ca (s,i) sa fie muchie critica
             {
                 ct_biconexe ++;
 
@@ -510,7 +512,7 @@ vector<int> graf :: Dijkstra(int s)
                 if(!vizDij[y]) // marcam nodul ca fiind vizitat daca nu era
                 {
                     vizDij[y] = 1;
-                    q.push({dist[y],y});
+                    q.push({dist[y],y}); // adaugam din nou in coada pt ce ne ar putea imbunatati costul ulterior
                 }
             }
         }
@@ -600,7 +602,8 @@ int graf :: Find(int x, int parinte[NMax]) // determina radacina arborelui din c
 }
 
 void graf :: Union(int x, int y, int parinte[NMax]) // se reunesc multimile celor doua numere x si y
-{                                // unim radacina lui x cu radacina lui y (adaugand rad lui y la rad lui x)
+{
+    // unim radacina lui x cu radacina lui y (adaugand rad lui y la rad lui x)
     int a, b;
     a = Find(x, parinte);
     b = Find(y, parinte);
@@ -637,12 +640,12 @@ void graf :: Roy_Floyd(int matrice[NMax1][NMax1])
 {
     for(int k = 1; k <= nrNoduri; ++k)
         for(int i = 1; i <= nrNoduri; ++i)
-          for(int j = 1; j <= nrNoduri; ++j)
-            if(matrice[i][j] > matrice[i][k] + matrice[k][j])
-               matrice[i][j] = matrice[k][j] + matrice[i][k];
+            for(int j = 1; j <= nrNoduri; ++j)
+                if(matrice[i][j] > matrice[i][k] + matrice[k][j])
+                    matrice[i][j] = matrice[k][j] + matrice[i][k];
 
     // afisare
-     for(int i = 1; i <= nrNoduri; ++i)
+    for(int i = 1; i <= nrNoduri; ++i)
     {
         for(int j = 1; j <= nrNoduri; ++j)
             if(matrice[i][j] != inf2)
@@ -686,11 +689,11 @@ void graf :: BFS_Diametru_Arbore(int s, int &capat, int &distanta_maxima)
 
 int graf :: Diametru_Arbore()
 {
-   int capat1, capat2, distanta_maxima;
-   BFS_Diametru_Arbore(1, capat1, distanta_maxima); // facem un BFS din primul nod si aflam capatul cel mai indepartat si distanta pana la capatul cel mai indepartat
-   BFS_Diametru_Arbore(capat1, capat2, distanta_maxima); // facem un BFS din capatul rezultat in apelul anterior si aflam capatul cel mai indepartat de acesta si distanta dintre ele
+    int capat1, capat2, distanta_maxima;
+    BFS_Diametru_Arbore(1, capat1, distanta_maxima); // facem un BFS din primul nod si aflam capatul cel mai indepartat si distanta pana la capatul cel mai indepartat
+    BFS_Diametru_Arbore(capat1, capat2, distanta_maxima); // facem un BFS din capatul rezultat in apelul anterior si aflam capatul cel mai indepartat de acesta si distanta dintre ele
 
-   return distanta_maxima;
+    return distanta_maxima;
 }
 
 void graf :: Euler(int s, bool viz[NMax], int &ct, vector<int>&Sol)
@@ -949,4 +952,3 @@ int main()
     }
     return 0;
 }
-
